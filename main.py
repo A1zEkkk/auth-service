@@ -1,12 +1,38 @@
-import os
-from dotenv import load_dotenv
+from cfg import Settings
 
 from authlib.jose import jwt
+from time import time
+
+import datetime
 
 
-load_dotenv()
+class Token:
+    def __init__(self, settings: Settings):
+        self.settings = settings
 
 
-SECRET_KEY = os.getenv('SECRET_KEY') #HS256
+    def get_token(self, type_token: str, payload: dict):
 
-print(SECRET_KEY)
+        header = {"alg": self.settings.algorithm, "typ": type_token}
+        payload["iat"] = int(time())
+
+        token = jwt.encode(header, payload, self.settings.secret_key)
+        return token
+
+    def decode_token(self, token: str):
+        claim = jwt.decode(token, self.settings.secret_key)
+        type_token = claim["typ"]
+
+        if type_token not in self.settings.secret_key:
+            return 0
+
+
+from_data = {}
+
+try:
+    name = from_data["name"]
+except KeyError:
+    print("error")
+    raise
+finally:
+    print("finaly")
