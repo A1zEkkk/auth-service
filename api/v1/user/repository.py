@@ -1,7 +1,9 @@
 from core.db.db import database
 from .schemas.requests import UserCreateSchema
-from sqlalchemy import insert, selectgit
+from sqlalchemy import insert, select
 from .models import UserModel
+from .schemas.responses import UserResponseSchema
+
 
 class UserRepository:
 

@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY : str
     POSTGRES_USER : str
     POSTGRES_PASSWORD : str
+    EXPIRE_AT_ACCESS: int = 1800
+    EXPIRE_AT_REFRESH: int = 2629743
 
     def get_db_url(self):
         return ""
