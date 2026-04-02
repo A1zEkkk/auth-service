@@ -1,13 +1,5 @@
 from pydantic import BaseModel, EmailStr, model_validator, field_validator
-
-
-def normalize_number(number: str) -> str:
-    normalized_number = ""
-    for i in number:
-        if i not in "+-() ":
-            normalized_number += i
-
-    return normalized_number
+from api.v1.user.utils import normalize_number
 
 
 class UserCreateSchema(BaseModel):

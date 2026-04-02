@@ -9,6 +9,8 @@ from sqlalchemy.orm import relationship
 
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, PrimaryKeyConstraint
 
+from api.v1.user.utils import normalize_number
+
 from core.db.base import Base
 
 
@@ -27,14 +29,14 @@ class UserModel(Base):
 
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, auto_increment=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(30), nullable=False)
     surname: Mapped[str] = mapped_column(String(30), nullable=False)
     email: Mapped[str] = mapped_column(String(30), nullable=False)
     phone: Mapped[str] = mapped_column(String(15), nullable=False)
     password: Mapped[str] = mapped_column(String(255), nullable=False)
 
-    roles: List[RoleModel] = relationship(
+    roles: Mapped[RoleModel] = relationship(
         "RoleModel",
         secondary=user_roles_table,
         back_populates="users",
@@ -53,21 +55,3 @@ class RoleModel(Base):
         "UserModel", secondary=user_roles_table, back_populates="roles"
     )
 
-class RefreshTokenModel(Base):
-    def __init__(self):
-        pass
-
-    __tablename__ = "refresh_tokens"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, auto_increment=True)
-    refresh_token: Mapped[str] = mapped_column(String(255), nullable=False) #hash
-
-    users = relationship(
-        "UserModel", secondary=user_roles_table, back_populates="roles"
-    )
-
-    roles: List[RoleModel] = relationship(
-        "RoleModel",
-        secondary=user_roles_table,
-        back_populates="users",
-    )

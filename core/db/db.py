@@ -10,9 +10,6 @@ def use_inspector(conn):
     inspector = inspect(conn)
     return inspector.get_table_names()
 
-import os
-print("JWT_ALGORITHM:", os.getenv("JWT_ALGORITHM"))
-print("JWT_SECRET_KEY:", os.getenv("JWT_SECRET_KEY"))
 
 class AsyncDatabaseSession:
     def __init__(self):
