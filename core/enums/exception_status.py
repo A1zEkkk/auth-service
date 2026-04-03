@@ -11,7 +11,7 @@ class ExceptionStatus(Enum):
     USER_NOT_FOUND = (HTTPStatus.NOT_FOUND, "User not found")
     PASSWORD_NOT_MATCHED = (HTTPStatus.BAD_REQUEST, "Password doesn't match")
 
-    UNPROCESSABLE_TOKEN = (HTTPStatus.UNPROCESSABLE_ENTITY, "Couldn't decode the token")
+    UNPROCESSABLE_TOKEN = (HTTPStatus.UNPROCESSABLE_ENTITY, "Couldn't decode the refresh_token")
     INVALID_TOKEN = (HTTPStatus.UNPROCESSABLE_ENTITY, "Token is invalid")
     TOKEN_EXPIRED = (HTTPStatus.UNAUTHORIZED, "Token expired")
     UNAUTHORIZED = (HTTPStatus.UNAUTHORIZED, "Unauthorized")

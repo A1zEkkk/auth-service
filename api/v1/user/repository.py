@@ -41,3 +41,11 @@ class UserRepository:
 
         return res
 
+    async def get_user_by_email(self, email):
+        await self.db.rollback()
+
+        query = select(UserModel).where(UserModel.email == email)
+        res = await self.db.execute(query)
+        res = res.scalar()
+        await self.db.commit()
+        return res
