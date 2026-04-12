@@ -1,60 +1,30 @@
-from http import HTTPStatus
-
-from core.enums.status_type import StatusType
+from starlette import status
 
 
-class CustomException(Exception):
-    status: str
-    status_type: str
-    message: str
-    _status_code: int
-
-    class Config:
-        arbitrary_types_allowed = True
-        underscore_attrs_are_private = True
-
-    @property
-    def status_code(self):
-        return self._status_code
+class MainException(Exception):
+    pass
 
 
-class BadRequestException(CustomException):
-    status = StatusType.ERROR.value
-    status_type = HTTPStatus.BAD_REQUEST.name
-    message = HTTPStatus.BAD_REQUEST.phrase
-    _status_code = HTTPStatus.BAD_REQUEST.value
+class UserAlreadyExistsError(MainException):
+    status_code = status.HTTP_409_CONFLICT
+    detail = "User already exists"
 
+class InvalidPasswordError(MainException):
+    status_code = status.HTTP_401_UNAUTHORIZED
+    detail = "Password is incorrect"
 
-class NotFoundException(CustomException):
-    status = StatusType.ERROR.value
-    status_type = HTTPStatus.NOT_FOUND.name
-    message = HTTPStatus.NOT_FOUND.phrase
-    _status_code = HTTPStatus.NOT_FOUND.value
+class UserNoResultFoundError(MainException):
+    status_code = status.HTTP_404_NOT_FOUND
+    detail = "User doesn't exist"
 
+class IncorrectPasswordLengthError(MainException):
+    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+    detail = "Password is incorrect"
 
-class ForbiddenException(CustomException):
-    status = StatusType.ERROR.value
-    status_type = HTTPStatus.FORBIDDEN.name
-    message = HTTPStatus.FORBIDDEN.phrase
-    _status_code = HTTPStatus.FORBIDDEN.value
+class IncorrectPasswordRuleError(MainException):
+    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+    detail = "Password is incorrect"
 
-
-class UnauthorizedException(CustomException):
-    status = StatusType.ERROR.value
-    status_type = HTTPStatus.UNAUTHORIZED.name
-    message = HTTPStatus.UNAUTHORIZED.phrase
-    _status_code = HTTPStatus.UNAUTHORIZED.value
-
-
-class UnprocessableEntity(CustomException):
-    status = StatusType.ERROR.value
-    status_type = HTTPStatus.UNPROCESSABLE_ENTITY.name
-    message = HTTPStatus.UNPROCESSABLE_ENTITY.phrase
-    _status_code = HTTPStatus.UNPROCESSABLE_ENTITY.value
-
-
-class DuplicateValueException(CustomException):
-    status = StatusType.ERROR.value
-    status_type = HTTPStatus.UNPROCESSABLE_ENTITY.name
-    message = HTTPStatus.UNPROCESSABLE_ENTITY.phrase
-    _status_code = HTTPStatus.UNPROCESSABLE_ENTITY.value
+class InvalidPhoneNumberError(MainException):
+    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+    detail = "Password is incorrect"

@@ -12,9 +12,8 @@ def hash_password(password) -> bytes:
         salt=bcrypt.gensalt()
     )
 
-def verify_password(password, hashed_password) -> bool:
-    settings = get_settings()
+def verify_password(password: str, hashed_password: str) -> bool:
     return bcrypt.checkpw(
-        password=password.encode(settings.ENCODING),
-        hashed_password=hashed_password
+        password.encode("utf-8"),
+        hashed_password.encode("utf-8")
     )

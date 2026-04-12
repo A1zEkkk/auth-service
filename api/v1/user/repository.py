@@ -1,51 +1,36 @@
-from core.db.db import database
-from .schemas.requests import UserCreateSchema
+from core.db.db import database, AsyncDatabaseSession
+from api.v1.user.models import UserModel
+from api.v1.schemas.requests.user import UserCreate
 from sqlalchemy import insert, select
-from .models import UserModel
-from .schemas.responses import UserResponseSchema
+from sqlalchemy.orm import selectinload
+from api.v1.schemas.dto.user import UserDTO
 
 
 class UserRepository:
+    def __init__(self, db: AsyncDatabaseSession = database):
+        self.db = db
 
-    def __init__(self, db=database):
-        self.db= db
-
-    async def create_user(self, user: UserCreateSchema):
-        await self.db.rollback()
-
-        user_dict = user.model_dump()
-
-        query = insert(UserModel).values(**user_dict)
-        res = await self.db.execute(query)
-
-        return await self.db.commit()
-
-
-    async def get_user_by_login(self, login):
-        await self.db.rollback()
-
-        query = select(UserModel).where(UserModel.email == login)
-        res = await self.db.execute(query)
-        res = res.scalar()
+    async def create(self, user: UserCreate):
+        stmt = insert(UserModel).values(**user.model_dump()).returning(UserModel.id)
+        res = await self.db.execute(stmt)
+        user_id = res.scalar_one()
         await self.db.commit()
 
-        return res
+        stmt = (
+            select(UserModel)
+            .options(selectinload(UserModel.role))
+            .where(UserModel.id == user_id)
+        )
 
-    async def get_user_by_phone(self, phone):
-        await self.db.rollback()
+        res = await self.db.execute(stmt)
+        return res.scalar_one()
 
-        query = select(UserModel).where(UserModel.phone == phone)
-        res = await self.db.execute(query)
-        res = res.scalar()
-        await self.db.commit()
+    async def get_by_email(self, email: str):
+        stmt = (select(UserModel).options(selectinload(UserModel.role)).where(UserModel.email == email))
+        result = await self.db.execute(stmt)
+        return result.scalars().first()
 
-        return res
-
-    async def get_user_by_email(self, email):
-        await self.db.rollback()
-
-        query = select(UserModel).where(UserModel.email == email)
-        res = await self.db.execute(query)
-        res = res.scalar()
-        await self.db.commit()
-        return res
+    async def get_by_phone(self, phone: str):
+        stmt = (select(UserModel).options(selectinload(UserModel.role)).where(UserModel.phone == phone))
+        result = await self.db.execute(stmt)
+        return result.scalars().first()
