@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from core.configs import settings
 from sqlalchemy import inspect
+from sqlalchemy import text
 
 from . import Base
 
@@ -40,6 +41,8 @@ class AsyncDatabaseSession:
         async with self._engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
             tables = await conn.run_sync(use_inspector)
+            #Костыль
+            await conn.execute(text("insert into roles (id, name) values (1, 'user') on conflict (id) do NOTHING;"))
             print(tables)
 
     async def disconnect(self) -> None:

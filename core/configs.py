@@ -16,7 +16,7 @@ class Settings(BaseSettings):
 
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
-    POSTGRES_HOST: str = "localhost"   # имя сервиса в docker-compose
+    POSTGRES_HOST: str   # имя сервиса в docker-compose
     POSTGRES_PORT: int = 5432
     DB_NAME: str
 
