@@ -1,5 +1,7 @@
-from api.v1.user.view import UserView
-from api.v1.tokenJWT.service import TokenService
+from fastapi import Depends
+
+from api.v1.user.view import UserView, get_user_view
+from api.v1.tokenJWT.service import TokenService, get_token_service
 from api.v1.schemas.requests.auth import AuthRequestsUsingPhone, AuthRequestsUsingEmail
 from api.v1.schemas.dto.user import UserDTO
 from core.utils import verify_password
@@ -7,7 +9,7 @@ from core.exceptions.base import InvalidPasswordError, UserNoResultFoundError
 
 
 class AuthService:
-    def __init__(self, user_view: UserView = UserView()):
+    def __init__(self, user_view: UserView):
         self.user_view = user_view
 
     async def auth_user_with_phone(self, data: AuthRequestsUsingPhone)-> UserDTO:
@@ -41,3 +43,6 @@ class AuthService:
             raise InvalidPasswordError
 
         return user_dto
+
+def get_auth_service(user_view: UserView = Depends(get_user_view))-> AuthService:
+    return AuthService(user_view)

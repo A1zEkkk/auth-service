@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import async_sessionmaker
 from core.configs import settings
 from sqlalchemy import inspect
 from sqlalchemy import text
@@ -15,11 +15,9 @@ def use_inspector(conn):
 class AsyncDatabaseSession:
     def __init__(self):
         #Инциализуеруем, вызвав специальные функции, которые описаны ниже
-        self._session = None
         self._engine = None
+        self._sessionmaker = None
 
-    def __getattr__(self, name):
-        return getattr(self._session, name)
 
     async def init(self):
         self._engine = create_async_engine(
@@ -30,12 +28,16 @@ class AsyncDatabaseSession:
             max_overflow=10,
             echo_pool='debug',
             pool_recycle=499,
+            echo=True,
         )
-        self._session = sessionmaker(
+        self._sessionmaker = async_sessionmaker(
             bind=self._engine,
             expire_on_commit=False,
             class_=AsyncSession,
-        )()
+        )
+
+    def session(self):
+        return self._sessionmaker()
 
     async def create_all(self):
         async with self._engine.begin() as conn:
@@ -50,3 +52,8 @@ class AsyncDatabaseSession:
             await self._engine.dispose()
 
 database = AsyncDatabaseSession()
+
+async def get_db():
+    async with database.session() as session:
+        async with session.begin():
+            yield session

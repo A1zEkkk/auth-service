@@ -1,5 +1,5 @@
 from log.app import LoggingMiddleware
-from .db.db import database
+from .db.db import AsyncDatabaseSession, database
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from api.v1.router import router

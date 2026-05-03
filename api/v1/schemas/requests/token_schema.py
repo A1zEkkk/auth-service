@@ -22,3 +22,17 @@ class TokenData(BaseModel):
 
 
 
+token_access = TokenData(
+    type_token="access_token",
+    role="user",
+    user_id=1,
+)
+
+token_refresh = TokenData(
+    type_token="refresh_token",
+    role="user",
+    user_id=1,
+)
+
+print(token_access)
+print(token_refresh)

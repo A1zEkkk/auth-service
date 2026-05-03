@@ -1,6 +1,6 @@
 from core.configs import get_settings, Settings
-from api.v1.schemas.requests.token import TokenData
-from authlib.jose import jwt
+from api.v1.schemas.requests.token_schema import TokenData
+from authlib.jose import jwt, JWTClaims
 
 
 class TokenService:
@@ -23,17 +23,31 @@ class TokenService:
 
         return token
 
-    def verify_token(self, token: bytes):
-        return jwt.decode(token, key=self.settings.JWT_SECRET_KEY)
+    def verify_token(self, token: str) -> JWTClaims:
+        claims = jwt.decode(token, key=self.settings.JWT_SECRET_KEY)
+        #Декодирует нашщу шляпу, что бы мо могли получить данные из заголовка и полезной нагрузки
+        return claims
 
     def get_tokens(self, token_data: TokenData):
-        token_data.type_token = "access_token"
-        access_token = self.get_token(token_data)
-        token_data.type_token = "refresh_token"
-        refresh_token = self.get_token(token_data)
-        print(access_token)
-        print(refresh_token)
-        return {"access_token": access_token, "refresh_token": refresh_token}
+        access_data = TokenData(
+            type_token="access_token",
+            role=token_data.role,
+            user_id=token_data.user_id,
+        )
+        refresh_data = TokenData(
+            type_token="refresh_token",
+            role=token_data.role,
+            user_id=token_data.user_id,
+        )
+
+        access_token = self.get_token(access_data)
+        refresh_token = self.get_token(refresh_data)
+
+        data = {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+        }
+        return data
 
 
 def get_token_service() -> TokenService:
