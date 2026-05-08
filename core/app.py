@@ -24,8 +24,6 @@ async def lifespan(app: FastAPI):
 
 
 def create_app():
-
-    #Не забыть прописать sql запрос
     app = FastAPI(
         title="Сервис Авторизации",
         lifespan=lifespan

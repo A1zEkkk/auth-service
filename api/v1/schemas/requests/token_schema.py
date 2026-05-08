@@ -20,19 +20,3 @@ class TokenData(BaseModel):
         self.exp = self.iat + get_settings().EXPIRE_AT_REFRESH
         return self
 
-
-
-token_access = TokenData(
-    type_token="access_token",
-    role="user",
-    user_id=1,
-)
-
-token_refresh = TokenData(
-    type_token="refresh_token",
-    role="user",
-    user_id=1,
-)
-
-print(token_access)
-print(token_refresh)

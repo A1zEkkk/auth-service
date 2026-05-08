@@ -14,16 +14,16 @@ class RefreshRepository:
         self.db = db
 
     async def create_token(self, token: str):
-        stmt = insert(RefreshRepository).values(token=token)
+        stmt = insert(RefreshTokenModel).values(token=token)
         return await self.db.execute(stmt)
 
     async def get_token(self, token: str):
-        stmt = select(RefreshRepository).where(RefreshTokenModel.token == token)
+        stmt = select(RefreshTokenModel).where(RefreshTokenModel.token == token)
         res = await self.db.execute(stmt)
         return res.scalar_one_or_none()
 
     async def update_token(self, token: str):
-        stmt = update(RefreshRepository).values(is_revoked=True).where(RefreshTokenModel.token == token)
+        stmt = update(RefreshTokenModel).where(RefreshTokenModel.token == token).values(is_revoked=True).returning(RefreshTokenModel)
         res = await self.db.execute(stmt)
         return res.scalar_one_or_none()
 

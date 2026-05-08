@@ -9,4 +9,4 @@ RUN apk update && apk add --no-cache gcc musl-dev \
 
 COPY . .
 
-CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "info"]

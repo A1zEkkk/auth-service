@@ -5,7 +5,8 @@ from api.v1.tokenJWT.service import TokenService, get_token_service
 from api.v1.schemas.requests.auth import AuthRequestsUsingPhone, AuthRequestsUsingEmail
 from api.v1.schemas.dto.user import UserDTO
 from core.utils import verify_hash_password
-from core.exceptions.base import InvalidPasswordError, UserNoResultFoundError
+from core.exceptions.domain import NoResultFoundError
+from core.exceptions.validation import AuthDataError
 
 
 class AuthService:
@@ -24,7 +25,7 @@ class AuthService:
             "role": user.role.name
         })
         if not verify_hash_password(data.password, user_dto.password):
-            raise InvalidPasswordError
+            raise AuthDataError("Invalid password")
 
         return user_dto
 
@@ -40,7 +41,7 @@ class AuthService:
             "role": user.role.name
         })
         if not verify_hash_password(data.password, user_dto.password):
-            raise InvalidPasswordError
+            raise AuthDataError("Invalid password")
 
         return user_dto
 

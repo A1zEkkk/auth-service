@@ -3,7 +3,6 @@ from api.v1.schemas.requests.user import UserCreate
 from .register import RegisterUseCase, get_register_user
 
 
-
 register_router = APIRouter()
 
 

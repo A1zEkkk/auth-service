@@ -2,7 +2,7 @@ from fastapi import Depends
 
 from .repository import UserRepository, get_user_repository
 from api.v1.schemas.requests.user import UserCreate
-from core.exceptions.base import UserAlreadyExistsError, UserNoResultFoundError
+from core.exceptions.domain import NoResultFoundError, AlreadyExistsError
 
 class UserService:
     def __init__(self, user_repository: UserRepository):
@@ -10,9 +10,12 @@ class UserService:
 
     async def create_user(self, user: UserCreate):
         data = await self.user_repository.get_user_by_login(user.email)
-        print(data)
         if data is not None:
-            raise UserAlreadyExistsError
+            raise AlreadyExistsError("User already exists")
+
+        data = await self.user_repository.get_user_by_phone(user.phone)
+        if data is not None:
+            raise AlreadyExistsError("User already exists")
 
         user_id = await self.user_repository.create_user(user)
 
@@ -23,14 +26,14 @@ class UserService:
     async def get_user_by_phone(self, phone: str):
         data = await self.user_repository.get_user_by_phone(phone)
         if data is None:
-            raise UserNoResultFoundError
+            raise NoResultFoundError("User does not exist")
 
         return data
 
     async def get_user_by_email(self, email: str):
         data = await self.user_repository.get_user_by_email(email)
         if data is None:
-            raise UserNoResultFoundError
+            raise NoResultFoundError("User does not exist")
 
         return data
 

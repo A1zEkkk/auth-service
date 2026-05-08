@@ -10,7 +10,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Table, PrimaryKeyCon
 
 
 def default_exp():
-    return datetime.now(timezone.utc) + settings.EXPIRE_AT_REFRESH
+    return datetime.now(timezone.utc) + timedelta(seconds=settings.EXPIRE_AT_REFRESH)
 
 
 class RefreshTokenModel(Base):

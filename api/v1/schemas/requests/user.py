@@ -1,7 +1,7 @@
 from pydantic import BaseModel, field_validator, Field, EmailStr
 from core.utils import hash_password
 from api.v1.schemas.utils import normalize_phone_number
-from core.exceptions.base import IncorrectPasswordLengthError, IncorrectPasswordRuleError
+from core.exceptions.validation import AuthDataError
 
 class UserCreate(BaseModel):
     name: str = Field(min_length=1, max_length=15, description="Имя не может быть пустое")
@@ -14,7 +14,7 @@ class UserCreate(BaseModel):
     @classmethod
     def get_hash_for_password(cls, v):
         if not (8 <= len(v) <= 50):
-            raise IncorrectPasswordLengthError
+            raise AuthDataError("Invalid password length")
 
         upper = lower = digit = False
 
@@ -27,7 +27,7 @@ class UserCreate(BaseModel):
                 digit = True
 
         if not (upper and lower and digit):
-            raise IncorrectPasswordRuleError
+            raise AuthDataError("Invalid symbol password")
 
         return hash_password(v).decode('utf-8')
 

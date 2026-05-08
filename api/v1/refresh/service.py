@@ -4,9 +4,14 @@ from fastapi import Depends
 from .repository import RefreshRepository, get_refresh_repository
 from core.utils import hash_token
 from datetime import datetime, timezone
+from core.exceptions.domain import TokenError
 
 
 class RefreshService:
+    """
+    Класс отвечает за добавление токенов в бд, их проверку и отзыв, если оно требуется
+    """
+
     def __init__(self, refresh_repository: RefreshRepository):
         self.refresh_repository = refresh_repository
 
@@ -21,13 +26,13 @@ class RefreshService:
         token_obj = await self.refresh_repository.get_token(hashed_token)
 
         if token_obj is None:
-            raise Exception("Token not found")
+            raise TokenError("Token not found")
 
         if token_obj.is_revoked:
-            raise Exception("Token revoked")
+            raise TokenError("Token revoked")
 
-        if token_obj.expires_at < datetime.now(timezone.utc):
-            raise Exception("Token expired")
+        if token_obj.exp_at < datetime.now(timezone.utc):
+            raise TokenError("Token expired")
 
         return token_obj
 
@@ -35,7 +40,7 @@ class RefreshService:
         hashed_token = hash_token(token)
         token_obj = await self.refresh_repository.get_token(hashed_token)
         if token_obj is None:
-            raise Exception("Token not found")
+            raise TokenError("Token not found")
 
         result = await self.refresh_repository.update_token(hashed_token)
         return result

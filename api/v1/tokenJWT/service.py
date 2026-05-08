@@ -1,15 +1,19 @@
-from fastapi import Depends
-
 from core.configs import get_settings, Settings
 from api.v1.schemas.requests.token_schema import TokenData
+from core.exceptions.domain import TokenError
 from authlib.jose import jwt, JWTClaims
-from api.v1.refresh.service import RefreshService, get_refresh_service
-
+from authlib.jose.errors import (
+    DecodeError,
+    InvalidTokenError,
+    BadSignatureError,
+    ExpiredTokenError,
+    InvalidClaimError,
+    MissingClaimError,
+)
 
 class TokenService:
-    def __init__(self, refresh_service: RefreshService, settings: Settings = Depends(get_settings)):
-        self.settings = settings
-        self.refresh_service = refresh_service
+    def __init__(self):
+        self.settings = get_settings()
 
     async def get_token(self, token_data: TokenData):
         header = {
@@ -27,10 +31,34 @@ class TokenService:
 
         return token
 
-    async def verify_token(self, token: str) -> JWTClaims:
-        claims = jwt.decode(token, key=self.settings.JWT_SECRET_KEY)
-        #Декодирует нашщу шляпу, что бы мо могли получить данные из заголовка и полезной нагрузки
-        return claims
+    async def get_data_from_token(self, token: str) -> JWTClaims:
+        try:
+            # Сначала декодируем токен
+            claims = jwt.decode(token, key=self.settings.JWT_SECRET_KEY)
+
+            # Затем проверяем claims (рекомендуется всегда делать)
+            claims.validate()
+
+            return claims
+
+        except BadSignatureError:
+            raise TokenError("Invalid token signature")
+        except ExpiredTokenError:
+            raise TokenError("Token has expired")
+        except InvalidClaimError as e:
+            raise TokenError(f"Invalid claim: {str(e)}")
+        except MissingClaimError as e:
+            raise TokenError(f"Missing required claim: {str(e)}")
+        except DecodeError:
+            raise TokenError("Failed to decode token")
+        except InvalidTokenError:
+            raise TokenError("Invalid token")
+
+    async def is_refresh_token(self, token: str):
+        claims = await self.get_data_from_token(token)
+        if claims.header['typ']!='refresh_token':
+            raise TokenError("Invalid token type")
+
 
     async def get_tokens(self, token_data: TokenData):
         access_data = TokenData(
@@ -47,7 +75,6 @@ class TokenService:
         access_token = await self.get_token(access_data)
         refresh_token = await self.get_token(refresh_data)
 
-        await self.refresh_service.insert_token(refresh_token)
 
         data = {
             "access_token": access_token,
@@ -56,5 +83,6 @@ class TokenService:
         return data
 
 
-def get_token_service(refresh_service: RefreshService = Depends(get_refresh_service)) -> TokenService:
-    return TokenService(refresh_service)
+
+def get_token_service() -> TokenService:
+    return TokenService()
