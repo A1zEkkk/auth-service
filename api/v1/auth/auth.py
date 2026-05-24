@@ -1,4 +1,4 @@
-from fastapi.params import Depends
+from fastapi import Depends
 
 from api.v1.auth.service import AuthService, get_auth_service
 from api.v1.tokenJWT.service import TokenService, get_token_service

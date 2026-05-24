@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from api.v1.router import router
 from .exceptions.base import MainException
 from .exceptions.utils import app_exception_handler
-
+from core.rabbit.producer import rabbit_producer
 
 
 @asynccontextmanager
@@ -17,9 +17,17 @@ async def lifespan(app: FastAPI):
     """
     await database.init()
     await database.create_all()
+
+    await rabbit_producer.connect()
+    await rabbit_producer.channel.declare_queue(
+        "new_user",
+        durable=True
+    )
+
     try:
         yield
     finally:
+        await rabbit_producer.close()
         await database.disconnect()
 
 
