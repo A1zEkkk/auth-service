@@ -1,10 +1,10 @@
 from fastapi import Depends
 
-from api.v1.auth.service import AuthService, get_auth_service
-from api.v1.tokenJWT.service import TokenService, get_token_service
-from api.v1.refresh.refresh import RefreshService, get_refresh_service
-from api.v1.schemas.requests.auth import AuthRequestsUsingPhone, AuthRequestsUsingEmail
-from api.v1.schemas.requests.token_schema import TokenData
+from service.auth import AuthService, get_auth_service
+from service.jwt import TokenService, get_token_service
+from refresh.refresh import RefreshService, get_refresh_service
+from schemas.requests.auth import AuthRequestsUsingPhone, AuthRequestsUsingEmail
+from schemas.requests.token_schema import TokenData
 
 
 class AuthUserCase:

@@ -1,11 +1,9 @@
 from fastapi import Depends
 
 from api.v1.user.view import UserView, get_user_view
-from api.v1.tokenJWT.service import TokenService, get_token_service
-from api.v1.schemas.requests.auth import AuthRequestsUsingPhone, AuthRequestsUsingEmail
-from api.v1.schemas.dto.user import UserDTO
+from schemas.requests.auth import AuthRequestsUsingPhone, AuthRequestsUsingEmail
+from schemas.dto.user import UserDTO
 from core.utils import verify_hash_password
-from core.exceptions.domain import NoResultFoundError
 from core.exceptions.validation import AuthDataError
 
 

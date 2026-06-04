@@ -1,7 +1,7 @@
 from fastapi import Depends
 
-from .repository import UserRepository, get_user_repository
-from api.v1.schemas.requests.user import UserCreate
+from repository.user import UserRepository, get_user_repository
+from schemas.user import UserCreate
 from core.exceptions.domain import NoResultFoundError, AlreadyExistsError
 
 class UserService:

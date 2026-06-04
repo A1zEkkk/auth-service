@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, field_validator, EmailStr
-from api.v1.schemas.utils import normalize_phone_number
+from schemas.utils import normalize_phone_number
 from core.exceptions.validation import AuthDataError
 
 class AuthRequestsUsingPhone(BaseModel):

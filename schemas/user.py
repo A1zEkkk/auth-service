@@ -1,6 +1,6 @@
 from pydantic import BaseModel, field_validator, Field, EmailStr
 from core.utils import hash_password
-from api.v1.schemas.utils import normalize_phone_number
+from schemas.utils import normalize_phone_number
 from core.exceptions.validation import AuthDataError
 
 class UserCreate(BaseModel):

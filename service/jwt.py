@@ -1,5 +1,5 @@
-from core.configs import get_settings, Settings
-from api.v1.schemas.requests.token_schema import TokenData
+from core.configs import get_settings
+from schemas.requests.token_schema import TokenData
 from core.exceptions.domain import TokenError
 from authlib.jose import jwt, JWTClaims
 from authlib.jose.errors import (

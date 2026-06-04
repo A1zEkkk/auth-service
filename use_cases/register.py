@@ -1,9 +1,9 @@
-from api.v1.schemas.dto.user import UserDTO
+from schemas.dto.user import UserDTO
 from api.v1.user.view import UserView, get_user_view
-from api.v1.tokenJWT.service import TokenService, get_token_service
-from api.v1.schemas.requests.user import UserCreate
-from api.v1.schemas.requests.token_schema import TokenData
-from api.v1.refresh.service import RefreshService, get_refresh_service
+from service.jwt import TokenService, get_token_service
+from schemas.user import UserCreate
+from schemas.requests.token_schema import TokenData
+from service.refresh import RefreshService, get_refresh_service
 from core.rabbit.producer import RabbitProducer, get_rabbit_producer
 
 from fastapi import Depends

@@ -2,10 +2,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends
 
 from core.db.db import get_db
-from api.v1.schemas.requests.user import UserCreate
 from sqlalchemy import insert, select, update
 from sqlalchemy.orm import selectinload
-from .models import RefreshTokenModel
+from models.refresh import RefreshTokenModel
 
 
 

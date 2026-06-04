@@ -2,10 +2,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends
 
 from core.db.db import get_db
-from api.v1.schemas.requests.user import UserCreate
+from schemas.user import UserCreate
 from sqlalchemy import insert, select
 from sqlalchemy.orm import selectinload
-from .models import UserModel, RoleModel
+from models.user import UserModel
 
 
 class UserRepository:

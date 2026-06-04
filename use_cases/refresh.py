@@ -1,8 +1,8 @@
 from fastapi import Depends
 
-from .service import RefreshService, get_refresh_service
-from api.v1.tokenJWT.service import TokenService, get_token_service
-from api.v1.schemas.requests.token_schema import TokenData
+from service.refresh import RefreshService, get_refresh_service
+from service.jwt import TokenService, get_token_service
+from schemas.requests.token_schema import TokenData
 
 
 class RefreshTokenUseCase:

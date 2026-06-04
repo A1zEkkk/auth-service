@@ -1,7 +1,7 @@
 from fastapi import Depends
 
 
-from .repository import RefreshRepository, get_refresh_repository
+from repository.refresh import RefreshRepository, get_refresh_repository
 from core.utils import hash_token
 from datetime import datetime, timezone
 from core.exceptions.domain import TokenError
