@@ -1,7 +1,6 @@
 import json
 import aio_pika
-
-rabbit_url = "amqp://guest:guest@rabbitmq:5672/"
+from core.configs import settings
 
 
 class RabbitProducer:
@@ -25,7 +24,7 @@ class RabbitProducer:
     async def close(self):
         await self.connection.close()
 
-rabbit_producer = RabbitProducer(rabbit_url)
+rabbit_producer = RabbitProducer(settings.get_broker_url)
 
 def get_rabbit_producer()->RabbitProducer:
     return rabbit_producer

@@ -1,3 +1,4 @@
+from fastapi import APIRouter
 from .auth import router as auth_router
 from .refresh import router as refresh_router
 from .register import router as register_router
