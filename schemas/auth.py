@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, field_validator, EmailStr
 from schemas.utils import normalize_phone_number
-from core.exceptions.validation import AuthDataError
+from core.exc.validation import InvalidSymbolError, InvalidLengthError
 
 class AuthRequestsUsingPhone(BaseModel):
     phone: str
@@ -15,7 +15,7 @@ class AuthRequestsUsingPhone(BaseModel):
     @classmethod
     def get_hash_for_password(cls, v):
         if not (8 <= len(v) <= 50):
-            raise AuthDataError("Invalid password length")
+            raise InvalidSymbolError
 
         upper = lower = digit = False
 
@@ -28,7 +28,7 @@ class AuthRequestsUsingPhone(BaseModel):
                 digit = True
 
         if not (upper and lower and digit):
-            raise AuthDataError("Invalid symbol password")
+            raise InvalidSymbolError
 
         return v
 
@@ -41,7 +41,7 @@ class AuthRequestsUsingEmail(BaseModel):
     @classmethod
     def get_hash_for_password(cls, v):
         if not (8 <= len(v) <= 50):
-            raise AuthDataError("Invalid password length")
+            raise InvalidLengthError
 
         upper = lower = digit = False
 
@@ -54,6 +54,6 @@ class AuthRequestsUsingEmail(BaseModel):
                 digit = True
 
         if not (upper and lower and digit):
-            raise AuthDataError("Invalid symbol password")
+            raise InvalidSymbolError
 
         return v

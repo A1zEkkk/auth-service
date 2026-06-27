@@ -6,7 +6,7 @@ from core.configs import get_settings
 
 class TokenData(BaseModel):
     type_token: str | None = None
-    role: str
+    role: str | None = None
     user_id: int #когда должен перестать жить
     iat: int = Field(default_factory=lambda: int(time.time())) #Когда выпущен
     exp: int = None

@@ -3,7 +3,6 @@ from fastapi import Depends
 
 from core.db.db import get_db
 from sqlalchemy import insert, select, update
-from sqlalchemy.orm import selectinload
 from models.refresh import RefreshTokenModel
 
 
@@ -28,3 +27,7 @@ class RefreshRepository:
 
 def get_refresh_repository(db: AsyncSession = Depends(get_db)):
     return RefreshRepository(db)
+
+
+
+

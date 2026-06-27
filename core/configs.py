@@ -21,11 +21,25 @@ class Settings(BaseSettings):
 
     DRIVER: str = "postgresql+asyncpg"
 
+
+    RABBITMQ_USER: str = "guest"
+    RABBITMQ_PASSWORD: str = "guest"
+    RABBITMQ_HOST: str = "rabbitmq"
+    RABBITMQ_PORT: int = 5672
+    RABBITMQ_VHOST: str = "/"
+
     @property
     def get_db_url(self):
         return (
             f"{self.DRIVER}://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
             f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.DB_NAME}"
+        )
+
+    @property
+    def get_broker_url(self) -> str:
+        return (
+            f"amqp://{self.RABBITMQ_USER}:{self.RABBITMQ_PASSWORD}"
+            f"@{self.RABBITMQ_HOST}:{self.RABBITMQ_PORT}/{self.RABBITMQ_VHOST}"
         )
 
 settings = Settings()

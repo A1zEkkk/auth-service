@@ -1,4 +1,4 @@
-from core.exceptions.validation import AuthDataError
+from core.exc.validation import InvalidLengthError
 
 def normalize_phone_number(phone_number: str) -> str:
     total = 0
@@ -9,6 +9,6 @@ def normalize_phone_number(phone_number: str) -> str:
             total += 1
 
     if total != 11:
-        raise AuthDataError("Invalid lenght error")
+        raise InvalidLengthError
 
     return normalize_number

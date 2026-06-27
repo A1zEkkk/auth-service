@@ -1,8 +1,9 @@
 from fastapi import Depends
 
-from service.refresh import RefreshService, get_refresh_service
-from service.jwt import TokenService, get_token_service
-from schemas.requests.token_schema import TokenData
+from services.jwt import TokenService, get_token_service
+from services.refresh import RefreshService, get_refresh_service
+
+from schemas.JWT import TokenData
 
 
 class RefreshTokenUseCase:
@@ -12,7 +13,7 @@ class RefreshTokenUseCase:
 
     async def refresh_tokens(self, refresh_token: str): #returning new token
         await self.token_service.get_data_from_token(refresh_token) # Проверяем подписи и тд
-        await self.token_service.is_refresh_token(refresh_token)
+        self.token_service.is_refresh_token(refresh_token)
         #Проверки на то, что токен существует в бд + отзыв
         await self.refresh_service.verify_token(refresh_token)
         await self.refresh_service.expire_token(refresh_token)
@@ -23,7 +24,7 @@ class RefreshTokenUseCase:
             user_id=claims["id"],
             role=claims["role"],
         )
-        tokens = await self.token_service.get_tokens(token_data)
+        tokens = self.token_service.get_tokens(token_data)
         refresh_token = tokens["refresh_token"]
         await self.refresh_service.insert_token(refresh_token)
 

@@ -27,5 +27,5 @@ class RabbitProducer:
 
 rabbit_producer = RabbitProducer(rabbit_url)
 
-async def get_rabbit_producer()->RabbitProducer:
+def get_rabbit_producer()->RabbitProducer:
     return rabbit_producer

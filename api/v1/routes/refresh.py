@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
-from schemas.requests import RefreshToken
-from refresh.refresh import get_refresh_token_use_case, RefreshTokenUseCase
+from schemas.refresh import RefreshToken
+from use_cases.refresh import get_refresh_token_use_case, RefreshTokenUseCase
 
 router = APIRouter()
 

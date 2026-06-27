@@ -1,10 +1,11 @@
 from fastapi import Depends
 
-from service.auth import AuthService, get_auth_service
-from service.jwt import TokenService, get_token_service
-from refresh.refresh import RefreshService, get_refresh_service
-from schemas.requests.auth import AuthRequestsUsingPhone, AuthRequestsUsingEmail
-from schemas.requests.token_schema import TokenData
+from services.auth import AuthService, get_auth_service
+from services.jwt import TokenService, get_token_service
+from services.refresh import RefreshService, get_refresh_service
+
+from schemas.auth import AuthRequestsUsingPhone, AuthRequestsUsingEmail
+from schemas.JWT import TokenData
 
 
 class AuthUserCase:
@@ -20,7 +21,7 @@ class AuthUserCase:
             user_id=user.id
         )
 
-        tokens = await self.token_service.get_tokens(token_data)
+        tokens = self.token_service.get_tokens(token_data)
         refresh_token = tokens['refresh_token']
         await self.refresh_service.insert_token(refresh_token)
         return tokens
@@ -33,7 +34,7 @@ class AuthUserCase:
             user_id=user.id
         )
 
-        tokens = await self.token_service.get_tokens(token_data)
+        tokens = self.token_service.get_tokens(token_data)
         refresh_token = tokens['refresh_token']
         await self.refresh_service.insert_token(refresh_token)
         return tokens

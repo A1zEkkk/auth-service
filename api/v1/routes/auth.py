@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from schemas.requests.auth import AuthRequestsUsingEmail, AuthRequestsUsingPhone
+from schemas.auth import AuthRequestsUsingEmail, AuthRequestsUsingPhone
 from use_cases.auth import AuthUserCase, get_auth_user
 
 

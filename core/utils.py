@@ -1,6 +1,5 @@
 import bcrypt
 import hashlib
-import hmac
 
 from core.configs import get_settings
 
