@@ -1,5 +1,6 @@
 from fastapi import Depends
 
+from core.exc.infrastructure.rabbit import NotificationDeliveryFailed
 from services.user import UserService, get_user_service
 from services.jwt import TokenService, get_token_service
 from services.refresh import RefreshService, get_refresh_service
@@ -9,6 +10,7 @@ from schemas.dto.user import UserDTO
 from schemas.user import UserCreate
 from schemas.JWT import TokenData
 
+from outbox.repository import get_outbox_repository
 
 
 class RegisterUseCase:
@@ -45,10 +47,15 @@ class RegisterUseCase:
         refresh_token = tokens['refresh_token']
         await self.refresh_service.insert_token(refresh_token)
 
-        await self.producer_service.publish(
-            queue_name="new_user",
-            message=user_dto.model_dump()
-        )
+        try:
+            await self.producer_service.publish(
+                queue_name="new_user",
+                message=user_dto.model_dump()
+            )
+        except NotificationDeliveryFailed:
+            print("Сработало исключение")
+            repos = get_outbox_repository()
+            await repos.create("new_user", user_dto.model_dump())
 
         return tokens
 

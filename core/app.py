@@ -1,3 +1,4 @@
+import time
 from outbox.worker import run_worker
 import asyncio
 from core.db import Base
@@ -23,6 +24,7 @@ async def lifespan(app: FastAPI):
     корректное отключение при завершении работы.
     """
     async with async_engine.begin() as conn:
+        time.sleep(5)
         await conn.run_sync(Base.metadata.create_all)
         await conn.execute(text("insert into roles (id, name) values (1, 'user') on conflict (id) do NOTHING;"))
 

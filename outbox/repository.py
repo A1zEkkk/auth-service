@@ -10,9 +10,19 @@ class OutBoxRepository:
         self.db = db
 
     async def create(self, queue_name, message):
-        stmt = insert(OutBox).values(queue_name, message)
+        print("CREATE CALLED")
+
+        stmt = insert(OutBox).values(
+            queue_name=queue_name,
+            message=message,
+        )
+
         result = await self.db.execute(stmt)
+        print(result)
+
         await self.db.commit()
+        print("COMMIT")
+
         return result
 
     async def get_first(self):
